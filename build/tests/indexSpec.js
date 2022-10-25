@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __importDefault(require("../index"));
 const supertest_1 = __importDefault(require("supertest"));
 const request = (0, supertest_1.default)(index_1.default);
-describe("testing if the endpoint returns with status 200", () => {
-    it("runs the endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield request.get("/api/resize?picname=fjord.jpg&width=600&height=800");
+describe('testing if the endpoint returns with status 200', () => {
+    it('runs the endpoint', () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield request.get('/api/resize?picname=fjord.jpg&width=600&height=800');
         expect(response.status).toBe(200);
     }));
 });

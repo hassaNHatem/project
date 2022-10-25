@@ -10,8 +10,8 @@ const resizing = (path, imgname, width, hieght) => {
     const readstream = fs_1.default.createReadStream(path);
     let transform = (0, sharp_1.default)();
     if (width || hieght) {
-        let format = path.split(".").pop();
-        let picname = imgname.substring(0, imgname.indexOf("."));
+        let format = path.split('.').pop();
+        let picname = imgname.substring(0, imgname.indexOf('.'));
         console.log(picname);
         (0, sharp_1.default)(path)
             .resize(width, hieght)
