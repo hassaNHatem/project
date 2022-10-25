@@ -1,25 +1,25 @@
-import express from "express";
-import fs, { read, ReadStream } from "fs";
-import sharp from "sharp";
-import { resizing } from "./resizing";
+import express from 'express';
+import fs, { read, ReadStream } from 'fs';
+import sharp from 'sharp';
+import { resizing } from './resizing';
 const resize = express.Router();
 
-resize.get("/", (req, res) => {
+resize.get('/', (req, res) => {
   let width: undefined | number = undefined;
   let height: undefined | number = undefined;
 
-  if (typeof req.query.width === "string") {
+  if (typeof req.query.width === 'string') {
     width = parseInt(req.query.width);
   }
-  if (typeof req.query.height === "string") {
+  if (typeof req.query.height === 'string') {
     height = parseInt(req.query.height);
   }
   if (req.query.picname !== undefined) {
     let img = `src/assits/thumbnail/${req.query.picname
       .toString()
-      .substring(0, req.query.picname.toString().indexOf("."))}${
+      .substring(0, req.query.picname.toString().indexOf('.'))}${
       req.query.width
-    }x${req.query.height}.${req.query.picname.toString().split(".").pop()}`;
+    }x${req.query.height}.${req.query.picname.toString().split('.').pop()}`;
     res.type(`${req.query.picname}`);
     if (fs.existsSync(img)) {
       const readstream: ReadStream = fs.createReadStream(img);
@@ -33,7 +33,7 @@ resize.get("/", (req, res) => {
       ).pipe(res);
     }
   } else {
-    res.send("undefiend parameters");
+    res.send('undefiend parameters');
   }
 });
 export default resize;

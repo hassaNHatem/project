@@ -1,5 +1,5 @@
-import fs, { read, ReadStream } from "fs";
-import sharp from "sharp";
+import fs, { read, ReadStream } from 'fs';
+import sharp from 'sharp';
 
 export const resizing = (
   path: string,
@@ -10,8 +10,8 @@ export const resizing = (
   const readstream: ReadStream = fs.createReadStream(path);
   let transform = sharp();
   if (width || hieght) {
-    let format = path.split(".").pop();
-    let picname = imgname.substring(0, imgname.indexOf("."));
+    let format = path.split('.').pop();
+    let picname = imgname.substring(0, imgname.indexOf('.'));
     console.log(picname);
     sharp(path)
       .resize(width, hieght)
