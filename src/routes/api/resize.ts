@@ -1,21 +1,28 @@
 import express from 'express';
 import fs, { read, ReadStream } from 'fs';
+import path from 'path';
 import sharp from 'sharp';
 import { resizing } from './resizing';
 const resize = express.Router();
 
-resize.get('/', (req, res) => {
+resize.get('/', (req: express.Request, res: express.Response) => {
   let width: undefined | number = undefined;
   let height: undefined | number = undefined;
-
   if (typeof req.query.width === 'string') {
-    width = parseInt(req.query.width);
+    if (!isNaN(parseInt(req.query.width))) {
+      width = parseInt(req.query.width);
+    }
   }
   if (typeof req.query.height === 'string') {
-    height = parseInt(req.query.height);
+    if (!isNaN(parseInt(req.query.height))) height = parseInt(req.query.height);
   }
-  if (req.query.picname !== undefined) {
-    let img = `src/assits/thumbnail/${req.query.picname
+  if (
+    req.query.picname !== undefined &&
+    width !== undefined &&
+    height !== undefined
+  ) {
+    let assitsPath = path.join(__dirname, '../../assits/');
+    let img = `${assitsPath}thumbnail/${req.query.picname
       .toString()
       .substring(0, req.query.picname.toString().indexOf('.'))}${
       req.query.width
@@ -26,14 +33,24 @@ resize.get('/', (req, res) => {
       readstream.pipe(res);
     } else {
       resizing(
-        `src/assits/fullfolder/${req.query.picname}`,
+        `${assitsPath}fullfolder/${req.query.picname}`,
         req.query.picname.toString(),
         width,
         height
       ).pipe(res);
     }
   } else {
-    res.send('undefiend parameters');
+    let msg = '';
+    if (req.query.picname === undefined) {
+      msg += ' invalid image name ';
+    }
+    if (width === undefined) {
+      msg += 'invalid width ';
+    }
+    if (height === undefined) {
+      msg += 'invalid hight ';
+    }
+    res.send(msg);
   }
 });
 export default resize;
