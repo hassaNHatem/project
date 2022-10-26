@@ -32,12 +32,23 @@ resize.get('/', (req: express.Request, res: express.Response) => {
       const readstream: ReadStream = fs.createReadStream(img);
       readstream.pipe(res);
     } else {
-      resizing(
-        `${assitsPath}fullfolder/${req.query.picname}`,
-        req.query.picname.toString(),
-        width,
-        height
-      ).pipe(res);
+      if (
+        resizing(
+          `${assitsPath}fullfolder/${req.query.picname}`,
+          req.query.picname.toString(),
+          width,
+          height
+        ) !== undefined
+      ) {
+        resizing(
+          `${assitsPath}fullfolder/${req.query.picname}`,
+          req.query.picname.toString(),
+          width,
+          height
+        ).pipe(res);
+      } else {
+        res.send('resizing process failed or image doesnt exsist');
+      }
     }
   } else {
     let msg = '';

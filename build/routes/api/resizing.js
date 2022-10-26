@@ -12,7 +12,6 @@ const resizing = (path, imgname, width, hieght) => {
     if (width || hieght) {
         let format = path.split('.').pop();
         let picname = imgname.substring(0, imgname.indexOf('.'));
-        console.log(picname);
         (0, sharp_1.default)(path)
             .resize(width, hieght)
             .toFile(`./src/assits/thumbnail/${picname}${width}x${hieght}.${format}`);
