@@ -6,22 +6,30 @@ import { resizing } from './resizing';
 const resize = express.Router();
 
 resize.get('/', (req: express.Request, res: express.Response) => {
+  let msg = '';
   let width: undefined | number = undefined;
+  let assitsPath = path.join(__dirname, '../../assits/');
   let height: undefined | number = undefined;
   if (typeof req.query.width === 'string') {
-    if (!isNaN(parseInt(req.query.width))) {
-      width = parseInt(req.query.width);
+    if (!isNaN(Number(req.query.width))) {
+      if (parseInt(req.query.width) > 0) {
+        width = parseInt(req.query.width);
+      }
     }
   }
   if (typeof req.query.height === 'string') {
-    if (!isNaN(parseInt(req.query.height))) height = parseInt(req.query.height);
+    if (!isNaN(Number(req.query.height))) {
+      if (parseInt(req.query.height) > 0) {
+        height = parseInt(req.query.height);
+      }
+    }
   }
   if (
     req.query.picname !== undefined &&
+    fs.existsSync(`${assitsPath}fullfolder/${req.query.picname}`) &&
     width !== undefined &&
     height !== undefined
   ) {
-    let assitsPath = path.join(__dirname, '../../assits/');
     let img = `${assitsPath}thumbnail/${req.query.picname
       .toString()
       .substring(0, req.query.picname.toString().indexOf('.'))}${
@@ -32,34 +40,32 @@ resize.get('/', (req: express.Request, res: express.Response) => {
       const readstream: ReadStream = fs.createReadStream(img);
       readstream.pipe(res);
     } else {
-      if (
-        resizing(
-          `${assitsPath}fullfolder/${req.query.picname}`,
-          req.query.picname.toString(),
-          width,
-          height
-        ) !== undefined
-      ) {
-        resizing(
-          `${assitsPath}fullfolder/${req.query.picname}`,
-          req.query.picname.toString(),
-          width,
-          height
-        ).pipe(res);
-      } else {
-        res.send('resizing process failed or image doesnt exsist');
-      }
+      resizing(
+        `${assitsPath}fullfolder/${req.query.picname}`,
+        req.query.picname.toString(),
+        width,
+        height
+      ).pipe(res);
     }
   } else {
-    let msg = '';
-    if (req.query.picname === undefined) {
-      msg += ' invalid image name ';
+    if (!fs.existsSync(`${assitsPath}fullfolder/${req.query.picname}`)) {
+      msg += ' image not found  ';
     }
-    if (width === undefined) {
-      msg += 'invalid width ';
+    if (
+      width === undefined ||
+      width <= 0 ||
+      typeof width !== 'number' ||
+      isNaN(width)
+    ) {
+      msg += ' invalid width ';
     }
-    if (height === undefined) {
-      msg += 'invalid hight ';
+    if (
+      height === undefined ||
+      height <= 0 ||
+      typeof height !== 'number' ||
+      isNaN(height)
+    ) {
+      msg += ' invalid hight ';
     }
     res.send(msg);
   }
